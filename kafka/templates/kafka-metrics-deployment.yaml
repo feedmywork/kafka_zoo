@@ -4,7 +4,7 @@
 {{- $clusterDomain := .Values.clusterDomain -}}
 {{- $fullname := include "kafka.fullname" . -}}
 {{- $servicePort := int .Values.service.port -}}
-apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "kafka.fullname" . }}-exporter
