@@ -1,17 +1,17 @@
-{{- if .Values.config }}
+{{- if .Values.config_values.config }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "common.names.fullname" . }}
   namespace: {{ template "zookeeper.namespace" . }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
-    {{- if .Values.commonLabels }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
+    {{- if .Values.config_values.commonLabels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.config_values.commonLabels "context" $ ) | nindent 4 }}
     {{- end }}
-  {{- if .Values.commonAnnotations }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- if .Values.config_values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.config_values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 data:
   zoo.cfg: |-
-{{ .Values.config | indent 4 }}
+{{ .Values.config_values.config | indent 4 }}
 {{- end -}}

@@ -1,4 +1,4 @@
-{{- if .Values.metrics.enabled }}
+{{- if .Values.config_values.metrics.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -6,23 +6,23 @@ metadata:
   namespace: {{ template "zookeeper.namespace" . }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: zookeeper
-    {{- if .Values.commonLabels }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
+    {{- if .Values.config_values.commonLabels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.config_values.commonLabels "context" $ ) | nindent 4 }}
     {{- end }}
-  {{- if or .Values.metrics.service.annotations .Values.commonAnnotations }}
+  {{- if or .Values.config_values.metrics.service.annotations .Values.config_values.commonAnnotations }}
   annotations:
-    {{- if .Values.metrics.service.annotations }}
-    {{ include "common.tplvalues.render" ( dict "value" .Values.metrics.service.annotations "context" $) | nindent 4 }}
+    {{- if .Values.config_values.metrics.service.annotations }}
+    {{ include "common.tplvalues.render" ( dict "value" .Values.config_values.metrics.service.annotations "context" $) | nindent 4 }}
     {{- end }}
-    {{- if .Values.commonAnnotations }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+    {{- if .Values.config_values.commonAnnotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.config_values.commonAnnotations "context" $ ) | nindent 4 }}
     {{- end }}
   {{- end }}
 spec:
-  type: {{ .Values.metrics.service.type }}
+  type: {{ .Values.config_values.metrics.service.type }}
   ports:
     - name: tcp-metrics
-      port: {{ .Values.metrics.service.port }}
+      port: {{ .Values.config_values.metrics.service.port }}
       targetPort: metrics
   selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
     app.kubernetes.io/component: zookeeper
