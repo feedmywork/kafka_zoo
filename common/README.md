@@ -179,7 +179,7 @@ debug:
   example: false
 
 ## An instance would be:
-# registry: docker.io
+# registry: lib.matador.ais.co.th
 # repository: bitnami/nginx
 # tag: 1.16.1-debian-10-r63
 # pullPolicy: IfNotPresent
