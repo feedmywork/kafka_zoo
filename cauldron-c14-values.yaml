@@ -1213,23 +1213,6 @@ metrics:
 ##
 zookeeper:
   enabled: true
-  auth:
-    ## Enable Zookeeper auth
-    ##
-    enabled: false
-    ## User that will use Zookeeper clients to auth
-    ##
-    clientUser: "user1"
-    ## Password that will use Zookeeper clients to auth
-    ##
-    clientPassword: "user1234"
-    ## Comma, semicolon or whitespace separated list of user to be created. Specify them as a string, for example: "user1,user2,admin"
-    ##
-    serverUsers: ""
-    ## Comma, semicolon or whitespace separated list of passwords to assign to users when created. Specify them as a string, for example: "pass4user1, pass4user2, pass4admin"
-    ##
-    serverPasswords: ""
-
   ## Bitnami Zookeeper image version
   ## ref: https://hub.docker.com/r/bitnami/zookeeper/tags/
   ##
