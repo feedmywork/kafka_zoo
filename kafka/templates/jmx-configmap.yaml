@@ -120,16 +120,16 @@ data:
     - pattern: 'java.lang<name=([\s\w]+), type=GarbageCollector><LastGcInfo>duration: (\d+)'
       name: jvm_gc_collection_seconds_sum
       labels:
-        name: "$1"
-        value: "$2"
-        type: GAUGE
-        valueFactor: 0.001
+        name: $1
+      value: $2
+      type: GAUGE
+      valueFactor: 0.001
     - pattern: 'java.lang<type=Memory><(\w+)MemoryUsage>(\w+): (\d+)'
       name: jvm_memory_bytes_$2
       labels:
-        area: "$1"
-        value: "$3"
-        type: GAUGE
+        area: $1
+      value: $3
+      type: GAUGE
     - pattern: java.lang<type=(.+), name=(.+)><(.+)>(\w+)
       name: java_lang_$1_$4_$3_$2
     - pattern: java.lang<type=(.+), name=(.+)><>(\w+)
