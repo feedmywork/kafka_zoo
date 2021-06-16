@@ -683,7 +683,7 @@ externalAccess:
   service:
     ## Service type. Allowed values: LoadBalancer or NodePort
     ##
-    type: LoadBalancer
+    type: NodePort
     ## Port used when service type is LoadBalancer
     ##
     port: 9094
@@ -707,13 +707,14 @@ externalAccess:
     ##   - 30001
     ##   - 30002
     ##
-    nodePorts: []
+    nodePorts: 
+       - 30340
     ## Use worker host ips
-    useHostIPs: false
+    useHostIPs: true
     ## When service type is NodePort, you can specify the domain used for Kafka advertised listeners.
     ## If not specified, the container will try to get the kubernetes node external IP
     ##
-    # domain: mydomain.com
+    domain: cauldron-kafka.com
     ## Provide any additional annotations which may be required. Evaluated as a template
     ##
     annotations: {}
@@ -733,7 +734,7 @@ persistence:
   ## If undefined (the default) or set to null, no storageClassName spec is
   ## set, choosing the default provisioner.
   ##
-  # storageClass: "-"
+  storageClass: "nfs-client"
   ## PV Access Mode
   ##
   accessModes:
@@ -854,7 +855,7 @@ rbac:
   ## binding Kafka ServiceAccount to a role
   ## that allows Kafka pods querying the K8s API
   ##
-  create: false
+  create: true
 
 ## Kafka provisioning
 ##
@@ -925,7 +926,7 @@ metrics:
   ## Prometheus Kafka Exporter: exposes complimentary metrics to JMX Exporter
   ##
   kafka:
-    enabled: false
+    enabled: true
 
     ## Bitnami Kafka exporter image
     ## ref: https://hub.docker.com/r/bitnami/kafka-exporter/tags/
@@ -959,6 +960,7 @@ metrics:
     ##   web.telemetry-path: "/metrics"
     ##
     extraFlags: {}
+    ##     tls.insecure-skip-tls-verify: ""
 
     ## Name of the existing secret containing the optional certificate and key files
     ## for Kafka Exporter client authentication
@@ -1063,7 +1065,7 @@ metrics:
   ## Prometheus JMX Exporter: exposes the majority of Kafkas metrics
   ##
   jmx:
-    enabled: false
+    enabled: true
 
     ## Bitnami JMX exporter image
     ## ref: https://hub.docker.com/r/bitnami/jmx-exporter/tags/
@@ -1140,12 +1142,17 @@ metrics:
     ## (warning its crazy excessive and they aren't formatted in a prometheus style) (1) `whitelistObjectNames: []`
     ## (2) commented out above `overrideConfig`.
     ##
-    whitelistObjectNames:
-      - kafka.controller:*
-      - kafka.server:*
-      - java.lang:*
-      - kafka.network:*
-      - kafka.log:*
+    #  - kafka.producer:*
+    #  - kafka.consumer:*
+    #  - kafka.connect:*
+    #  - kafka.streams:*
+    #  - kafka.[producer|consumer|connect]:
+    whitelistObjectNames: []
+    #  - kafka.controller:*
+    #  - kafka.server:*
+    #  - java.lang:*
+    #  - kafka.network:*
+    #  - kafka.log:*
 
     ## Prometheus JMX exporter configuration
     ## Specify content for jmx-kafka-prometheus.yml. Evaluated as a template
@@ -1170,10 +1177,10 @@ metrics:
   ## Prometheus Operator ServiceMonitor configuration
   ##
   serviceMonitor:
-    enabled: false
+    enabled: true
     ## Namespace in which Prometheus is running
     ##
-    # namespace: monitoring
+    namespace: cauldron-c60
 
     ## Interval at which metrics should be scraped.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
@@ -1212,16 +1219,16 @@ zookeeper:
     enabled: false
     ## User that will use Zookeeper clients to auth
     ##
-    # clientUser:
+    clientUser: "user1"
     ## Password that will use Zookeeper clients to auth
     ##
-    # clientPassword:
+    clientPassword: "user1234"
     ## Comma, semicolon or whitespace separated list of user to be created. Specify them as a string, for example: "user1,user2,admin"
     ##
-    # serverUsers:
+    serverUsers: ""
     ## Comma, semicolon or whitespace separated list of passwords to assign to users when created. Specify them as a string, for example: "pass4user1, pass4user2, pass4admin"
     ##
-    # serverPasswords:
+    serverPasswords: ""
 
   ## Bitnami Zookeeper image version
   ## ref: https://hub.docker.com/r/bitnami/zookeeper/tags/
@@ -1400,10 +1407,10 @@ zookeeper:
       clientPassword:
       ## Comma, semicolon or whitespace separated list of user to be created. Specify them as a string, for example: "user1,user2,admin"
       ##
-      serverUsers:
+      serverUsers: "user1"
       ## Comma, semicolon or whitespace separated list of passwords to assign to users when created. Specify them as a string, for example: "pass4user1, pass4user2, pass4admin"
       ##
-      serverPasswords:
+      serverPasswords: "user1234"
 
     ## Size in MB for the Java Heap options (Xmx and XMs). This env var is ignored if Xmx an Xms are configured via JVMFLAGS
     ##
@@ -1512,10 +1519,10 @@ zookeeper:
       # existingClaim:
 
       enabled: true
-      # storageClass: "-"
+      storageClass: "nfs-client"
       accessModes:
         - ReadWriteOnce
-      size: 8Gi
+      size: 4Gi
       annotations: {}
       dataLogDir:
         size: 8Gi
@@ -1650,7 +1657,7 @@ zookeeper:
     ## Zookeeper Prometheus Exporter configuration
     ##
     metrics:
-      enabled: false
+      enabled: true
 
       ## Zookeeper Prometheus Exporter container port
       ##
@@ -1675,10 +1682,10 @@ zookeeper:
       ## Prometheus Operator ServiceMonitor configuration
       ##
       serviceMonitor:
-        enabled: false
+        enabled: true
         ## Namespace for the ServiceMonitor Resource (defaults to the Release Namespace)
         ##
-        namespace:
+        namespace: cauldron-c60
 
         ## Interval at which metrics should be scraped.
         ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
@@ -1697,10 +1704,10 @@ zookeeper:
       ## Prometheus Operator PrometheusRule configuration
       ##
       prometheusRule:
-        enabled: false
+        enabled: true
         ## Namespace for the PrometheusRule Resource (defaults to the Release Namespace)
         ##
-        namespace:
+        namespace: cauldron-c60
 
         ## PrometheusRule selector labels
         ## ref: https://github.com/bitnami/charts/tree/master/bitnami/prometheus-operator#prometheus-configuration

@@ -297,7 +297,7 @@ config_values:
     # existingClaim:
 
     enabled: true
-    # storageClass: "-"
+    storageClass: "nfs-client"
     accessModes:
       - ReadWriteOnce
     size: 8Gi
