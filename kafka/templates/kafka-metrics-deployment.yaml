@@ -50,6 +50,7 @@ spec:
               --sasl.enabled \
               --sasl.username="$SASL_USERNAME" \
               --sasl.password="${SASL_USER_PASSWORD%%,*}" \
+              --sasl.mechanism={{ .Values.metrics.kafka.mechanisms }} \
               {{- end }}
               {{- if (include "kafka.client.tlsEncryption" .) }}
               --tls.enabled \

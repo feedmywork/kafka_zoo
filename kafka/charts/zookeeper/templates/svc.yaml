@@ -5,33 +5,43 @@ metadata:
   namespace: {{ template "zookeeper.namespace" . }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: zookeeper
-    {{- if .Values.config_values.commonLabels }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.config_values.commonLabels "context" $ ) | nindent 4 }}
+    {{- if .Values.commonLabels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
     {{- end }}
-  {{- if or .Values.config_values.commonAnnotations .Values.config_values.service.annotations }}
+  {{- if or .Values.commonAnnotations .Values.service.annotations }}
   annotations:
-    {{- if .Values.config_values.service.annotations }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.config_values.service.annotations "context" $ ) | nindent 4 }}
+    {{- if .Values.service.annotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.service.annotations "context" $ ) | nindent 4 }}
     {{- end }}
-    {{- if .Values.config_values.commonAnnotations }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.config_values.commonAnnotations "context" $ ) | nindent 4 }}
+    {{- if .Values.commonAnnotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
     {{- end }}
   {{- end }}
 spec:
-  type: {{ .Values.config_values.service.type }}
-  {{- if and (.Values.config_values.service.loadBalancerIP) (eq .Values.config_values.service.type "LoadBalancer") }}
-  loadBalancerIP: {{ .Values.config_values.service.loadBalancerIP }}
+  type: {{ .Values.service.type }}
+  {{- if and (.Values.service.loadBalancerIP) (eq .Values.service.type "LoadBalancer") }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{- end }}
   ports:
-    {{ if not .Values.config_values.service.tls.disable_base_client_port }}
+    {{ if not .Values.service.tls.disable_base_client_port }}
     - name: tcp-client
       port: 2181
       targetPort: client
+      {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) (not (empty .Values.service.nodePorts.client)) }}
+      nodePort: {{ .Values.service.nodePorts.client }}
+      {{- else if eq .Values.service.type "ClusterIP" }}
+      nodePort: null
+      {{- end }}
     {{ end }}
-    {{ if .Values.config_values.service.tls.client_enable }}
+    {{ if .Values.service.tls.client_enable }}
     - name: tcp-client-tls
-      port: {{ .Values.config_values.service.tls.client_port }}
+      port: {{ .Values.service.tls.client_port }}
       targetPort: client-tls
+      {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) (not (empty .Values.service.nodePorts.clientTls)) }}
+      nodePort: {{ .Values.service.nodePorts.clientTls }}
+      {{- else if eq .Values.service.type "ClusterIP" }}
+      nodePort: null
+      {{- end }}
     {{ end }}
     - name: follower
       port: 2888

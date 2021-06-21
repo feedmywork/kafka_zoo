@@ -1,27 +1,27 @@
-{{- if and .Values.config_values.metrics.enabled .Values.config_values.metrics.prometheusRule.enabled .Values.config_values.metrics.prometheusRule.rules }}
+{{- if and .Values.metrics.enabled .Values.metrics.prometheusRule.enabled .Values.metrics.prometheusRule.rules }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ include "common.names.fullname" . }}
-  {{- if .Values.config_values.metrics.prometheusRule.namespace }}
-  namespace: {{ .Values.config_values.metrics.prometheusRule.namespace }}
+  {{- if .Values.metrics.prometheusRule.namespace }}
+  namespace: {{ .Values.metrics.prometheusRule.namespace }}
   {{- else }}
   namespace: {{ .Release.Namespace }}
   {{- end }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: zookeeper
-    {{- range $key, $value := .Values.config_values.metrics.prometheusRule.selector }}
+    {{- range $key, $value := .Values.metrics.prometheusRule.selector }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
-    {{- if .Values.config_values.commonLabels }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.config_values.commonLabels "context" $ ) | nindent 4 }}
+    {{- if .Values.commonLabels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
     {{- end }}
-  {{- if .Values.config_values.commonAnnotations }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.config_values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 spec:
   groups:
   - name: {{ include "common.names.fullname" . }}
-    rules: {{- toYaml .Values.config_values.metrics.prometheusRule.rules | nindent 6 }}
+    rules: {{- toYaml .Values.metrics.prometheusRule.rules | nindent 6 }}
 {{- end }}
 
