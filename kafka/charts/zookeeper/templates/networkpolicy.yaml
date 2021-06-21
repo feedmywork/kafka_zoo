@@ -1,15 +1,15 @@
-{{- if .Values.config_values.networkPolicy.enabled }}
+{{- if .Values.networkPolicy.enabled }}
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: {{ include "common.names.fullname" . }}
   namespace: {{ template "zookeeper.namespace" . }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
-    {{- if .Values.config_values.commonLabels }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.config_values.commonLabels "context" $ ) | nindent 4 }}
+    {{- if .Values.commonLabels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
     {{- end }}
-  {{- if .Values.config_values.commonAnnotations }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.config_values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 spec:
   podSelector:
@@ -17,9 +17,9 @@ spec:
   ingress:
     # Allow inbound connections to zookeeper
     - ports:
-        - port: {{ .Values.config_values.service.port }}
+        - port: {{ .Values.service.port }}
       from:
-      {{- if not .Values.config_values.networkPolicy.allowExternal }}
+      {{- if not .Values.networkPolicy.allowExternal }}
         - podSelector:
             matchLabels:
               {{ include "common.names.fullname" . }}-client: "true"
@@ -31,8 +31,8 @@ spec:
       {{- end }}
     # Internal ports
     - ports: &intranodes_ports
-        - port: {{ .Values.config_values.service.followerPort }}
-        - port: {{ .Values.config_values.service.electionPort }}
+        - port: {{ .Values.service.followerPort }}
+        - port: {{ .Values.service.electionPort }}
       from:
         - podSelector:
             matchLabels: {{- include "common.labels.matchLabels" . | nindent 14 }}
